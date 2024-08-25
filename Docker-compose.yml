@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  vote:
+    image: votingapp:latest
+    ports:
+      - "5000:80"
+    environment:
+      - OPTION_A=Cats
+      - OPTION_B=Dogs
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+    volumes:
+      - ./vote:/app
+
+
+  result:
+    image: resultapp:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+volumes:
+  postgres_data:

@@ -1,15 +1,13 @@
-version: '3.8'
+#version: '3.8'
 
 services:
   vote:
-    image: votingapp:latest
+    build: ./vote
     ports:
       - "5000:80"
     environment:
       - OPTION_A=Cats
       - OPTION_B=Dogs
-      - POSTGRES_HOST=db
-      - POSTGRES_DB=db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     depends_on:
@@ -17,18 +15,25 @@ services:
     volumes:
       - ./vote:/app
 
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_HOST: "db"
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
 
   result:
-    image: resultapp:latest
+    build: ./result
     ports:
       - "3000:3000"
     depends_on:
       - db
     environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_DB=db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-volumes:
-  postgres_data:

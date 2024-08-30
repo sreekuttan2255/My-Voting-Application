@@ -5,7 +5,7 @@ const port = 3000;
 
 // Database connection pool
 const pool = new Pool({
-  host: 'db', // PostgreSQL service name from Docker Compose
+host: 'db', // PostgreSQL service name from Docker Compose
   user: 'postgres',
   password: 'postgres',
   database: 'db',
@@ -19,45 +19,43 @@ app.get('/results', async (req, res) => {
 
     // Query to count votes for each option
     const result = await client.query(`
-      SELECT vote, COUNT(*) AS count 
-      FROM votes 
-      GROUP BY vote
-    `);
+        select voter_id,count(vote) from voting group by voter_id;
+      `);
 
-    const votes = result.rows.reduce((acc, row) => {
-      acc[row.vote] = row.count;
-      return acc;
-    }, {});
+    let html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Voting Results</title>
+    </head>
+    <body>
+      <h1>Voting Results</h1>
+      <table border="1">
+          <tr>
+            <th>Voter ID</th>
+            <th>Vote Count</th>
+          </tr>
+      `;
 
-    // Render a simple HTML page with the results
-    res.send(`
-      <html>
-      <head>
-        <title>Voting Results</title>
-      </head>
-      <body>
-        <h1>Voting Results</h1>
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Option</th>
-              <th>Votes</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Cats</td>
-              <td>${votes.Cats || 0}</td>
-            </tr>
-            <tr>
-              <td>Dogs</td>
-              <td>${votes.Dogs || 0}</td>
-            </tr>
-          </tbody>
-        </table>
-      </body>
-      </html>
-    `);
+      // Iterate over the result and build the table rows
+    result.rows.forEach(row => {
+       html += `
+        <tr>
+        <td>${row.voter_id}</td>
+        <td>${row.count}</td>
+        </tr>
+        `;
+      });
+
+    html += `
+      </table>
+    </body>
+    </html>
+    `;
+
+    // Send the HTML as a response (if using Express, for example)
+    res.send(html);
+
 
     client.release();
   } catch (err) {

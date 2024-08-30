@@ -42,19 +42,22 @@ def hello():
     if request.method == 'POST':
         vote = request.form['vote']
         app.logger.info('Received vote for %s', vote)
-        
+
         try:
             db = get_db()
             cursor = db.cursor()
+            app.logger.info('Inserting into table with vote: %s and voter_id: %s', vote, voter_id)
             cursor.execute(
-                "INSERT INTO votes (voter_id, vote) VALUES (%s, %s)",
-                (voter_id, vote)
+                "INSERT INTO voting (voter_id, vote) VALUES (%s, %s)",
+                (vote, voter_id)
             )
             db.commit()
             cursor.close()
         except Exception as e:
             app.logger.error('Failed to save vote: %s', e)
             db.rollback()
+            # Optionally, give feedback to the user if there's an error
+            return "An error occurred while saving your vote.", 500
 
     resp = make_response(render_template(
         'index.html',

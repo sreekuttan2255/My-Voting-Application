@@ -17,7 +17,7 @@ COPY . .
 EXPOSE 3000
 
 # Command to run the app
-CMD ["node", "result.js"]
+CMD ["node", "newresult.js"]
 
 
 

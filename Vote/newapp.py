@@ -34,7 +34,7 @@ def close_db(exception):
 @app.route("/", methods=['POST', 'GET'])
 def hello():
     voter_id = request.cookies.get('voter_id')
-    #voter_id = '1'
+    voter_id = '1'
 
     vote = None # The vote is set to a fixed value 
 

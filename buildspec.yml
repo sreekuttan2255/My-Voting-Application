@@ -21,6 +21,7 @@ phases:
       - echo "Pushing Docker images to ECR..."
       - docker push $REPO1_URI:$IMAGE_TAG
       - docker push $REPO2_URI:$IMAGE_TAG
+      - echo "Build completed successfully."
 
   artifacts:
     files:

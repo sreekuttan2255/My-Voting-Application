@@ -21,10 +21,15 @@ phases:
       - echo "Pushing Docker images to ECR..."
       - docker push $REPO1_URI:$IMAGE_TAG
       - docker push $REPO2_URI:$IMAGE_TAG
+      # Give your container name
+      - DOCKER_CONTAINER_NAME1= container-1
+      - DOCKER_CONTAINER_NAME2= container-2
+      - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - echo "Creating image definition file..."
+      - printf '[{"name":"%s","imageUri":"%s"},{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME1 $REPO1_URI:$IMAGE_TAG $DOCKER_CONTAINER_NAME2 $REPO2_URI:$IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
       - echo "Build completed successfully."
 
   artifacts:
     files:
-      - '**/*'
-      discard-paths: yes
-      #- imagedefinitions.json
+      - imagedefinitions.json

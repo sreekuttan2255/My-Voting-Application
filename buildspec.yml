@@ -7,7 +7,7 @@ phases:
       - REPO1_URI=582818554070.dkr.ecr.ap-south-1.amazonaws.com/voting-app-vote
       - REPO2_URI=582818554070.dkr.ecr.ap-south-1.amazonaws.com/voting-app-result
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-  
+
   build:
     commands:
       - echo "Building Docker images..."
@@ -21,15 +21,14 @@ phases:
       - echo "Pushing Docker images to ECR..."
       - docker push $REPO1_URI:$IMAGE_TAG
       - docker push $REPO2_URI:$IMAGE_TAG
-      # Give your container name
-      - DOCKER_CONTAINER_NAME1= container-1
-      - DOCKER_CONTAINER_NAME2= container-2
-      - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      # Define your container names
+      - DOCKER_CONTAINER_NAME1=voting-app-vote-container  # Actual container name for vote
+      - DOCKER_CONTAINER_NAME2=voting-app-result-container  # Actual container name for result
       - echo "Creating image definition file..."
       - printf '[{"name":"%s","imageUri":"%s"},{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME1 $REPO1_URI:$IMAGE_TAG $DOCKER_CONTAINER_NAME2 $REPO2_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
       - echo "Build completed successfully."
 
-  artifacts:
-    files:
-      - imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json

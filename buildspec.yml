@@ -1,0 +1,28 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - $(aws ecr get-login-password --region ap-south-1) | docker login --username AWS --password-stdin 582818554070.dkr.ecr.ap-south-1.amazonaws.com
+      - REPO1_URI=582818554070.dkr.ecr.ap-south-1.amazonaws.com/voting-app-vote
+      - REPO2_URI=582818554070.dkr.ecr.ap-south-1.amazonaws.com/voting-app-result
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+  
+  build:
+    commands:
+      - echo "Building Docker images..."
+      - docker build -t vote ./Vote
+      - docker build -t result ./Result
+      - docker tag vote:latest $REPO1_URI:$IMAGE_TAG
+      - docker tag result:latest $REPO2_URI:$IMAGE_TAG
+
+  post_build:
+    commands:
+      - echo "Pushing Docker images to ECR..."
+      - docker push $REPO1_URI:$IMAGE_TAG
+      - docker push $REPO2_URI:$IMAGE_TAG
+
+  artifacts:
+    files:
+      - '**/*'
+      #- imagedefinitions.json

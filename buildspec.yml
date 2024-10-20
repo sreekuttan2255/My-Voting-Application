@@ -20,7 +20,9 @@ phases:
     commands:
       - echo "Pushing Docker images to ECR..."
       - docker push $REPO1_URI:$IMAGE_TAG
+      - docker push $REPO1_URI:latest
       - docker push $REPO2_URI:$IMAGE_TAG
+      - docker push $REPO2_URI:latest
       # Define your container names
       - DOCKER_CONTAINER_NAME1=voting-app-vote-container  # Actual container name for vote
       - DOCKER_CONTAINER_NAME2=voting-app-result-container  # Actual container name for result

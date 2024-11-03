@@ -6,7 +6,7 @@ provider "aws" {
 # Define a security group to allow SSH, port 5000 and port 3000 access
 resource "aws_security_group" "allow_ssh_5000_3000" {
   name        = "allow_ssh_5000_3000"
-  description = "Allow SSH and port 5000 inbound traffic"
+  description = "Allow SSH and port 5000,3000 inbound traffic"
 
   # Ingress rule to allow SSH (port 22) from any IP address
   ingress {

@@ -32,13 +32,6 @@ resource "aws_security_group" "allow_ssh_5000_3000" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Egress rule to allow all outbound traffic
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 # Create an EC2 instance

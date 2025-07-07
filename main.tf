@@ -36,7 +36,7 @@ resource "aws_security_group" "allow_ssh_5000_3000" {
 
 # Create an EC2 instance
 resource "aws_instance" "my_ec2_instance" {
-  ami           = "ami-0818919f15d5129fe"  # Amazon Linux 2 AMI ID (change if needed)
+  ami           = "ami-id"  # Amazon Linux 2 AMI ID (change if needed)
   instance_type = "t2.micro"
 
   # Attach the security group
